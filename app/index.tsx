@@ -43,11 +43,6 @@ const performCal = (num1: number, num2: number, operator: string) => {
   }
 };
 
-let storedNumber1: string | null = null;
-let storedNumber2: string | null = null;
-let storedOperator: string | null = null;   
-
-
 export default function Index() {
 
 const [displayCal, setDisplayCal] = useState("");
@@ -55,27 +50,34 @@ const [displayCal, setDisplayCal] = useState("");
 const [result, setResult] = useState(0);
 
 const [num1, setNum1] = useState("");
-const [num2, setNum2] = useState(0);
+const [num2, setNum2] = useState("");
 const [operator, setOperator] = useState("");
 
-const number = (num: string) => {
-  if (storedNumber1 === null) {
-    storedNumber1 = num;
+const getOperation = (op : string) => {
+  if (num1 !== null) setOperator(op);
+  if(op === null){
+    setNum1(op + num1);
   } else {
-    storedNumber1 += num;
+    setNum2(op + num2);
   }
-  setNum1(storedNumber1);
+}
+
+const number = (num: string) => {
+  if (num1 === null) {
+    setNum1(num);
+  } else {
+    setNum1(num1 + num);
+  }
 
   if (operator !== null) {
-    if (storedNumber2 === null) {
-      storedNumber2 = num;
+    if (num2 === null) {
+      setNum2(num);
     } else {
-      storedNumber2 += num;
+      setNum2(num2 + num);
     }
-    setNum2(parseFloat(storedNumber2));
   }
 
-  setDisplayCal(storedNumber1 + (operator || "") + (storedNumber2 || ""));
+  setDisplayCal(num1 + (operator || "") + (num2 || ""));
 
 }
 
@@ -98,7 +100,7 @@ const number = (num: string) => {
 
       <View>
         {opBtn.map((item) => (
-          <TouchableOpacity onPress={() => setOperator(item.value)} activeOpacity={0.8} className="flex-1 bg-orange-400 p-6 rounded items-center justify-center ml-3 mb-3 w-40" key={item.value}>
+          <TouchableOpacity onPress={item.value === "=" ? () => performCal : () => getOperation(item.value)} activeOpacity={0.8} className="flex-1 bg-orange-400 p-6 rounded items-center justify-center ml-3 mb-3 w-40" key={item.value}>
             <Text className="text-2xl font-bold">{item.name}</Text>
           </TouchableOpacity>
         ))}
